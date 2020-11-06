@@ -14,11 +14,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class WebAppTask implements Runnable {
-  private String response;
+  private String responseMsg;
   private String relative_URL;
+  private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.ms");
+  private int responseCode;
 
   WebAppTask(String relative_URL) {
-    this.relative_URL = relative_URL;
+    if (!relative_URL.startsWith("/")) {
+      this.relative_URL = "/" + relative_URL.toLowerCase();
+    }
+    this.relative_URL = relative_URL.toLowerCase();
   }
 
   public void run() {
@@ -27,25 +32,24 @@ public class WebAppTask implements Runnable {
       if (inputStream != null) {
         BufferedReader buffer = new BufferedReader(new InputStreamReader(inputStream));
         JsonObject jsonObject = JsonParser.parseReader(buffer).getAsJsonObject();
-        response = jsonObject.get("msg").getAsString();
+        responseMsg = jsonObject.get("msg").getAsString();
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
-    SimpleDateFormat sdf = new SimpleDateFormat();
-    if (response != null)
-      System.out.printf("Date/Time: %s; Task %s, response msg: %s%n", sdf.format(new Date()), Thread.currentThread().getName(), response);
+    if (responseMsg != null)
+      System.out.printf("[%s] Task %s, response msg: %s%n", sdf.format(new Date()), Thread.currentThread().getName(), responseMsg);
+    else
+      System.out.printf("[%s] Status Code: %s%n", sdf.format(new Date()), responseCode);
+
   }
 
   private InputStream request(String url) throws IOException {
     URL createdURL = new URL(url);
     HttpURLConnection con = (HttpURLConnection) createdURL.openConnection();
     con.setRequestMethod("GET");
-    if (con.getResponseCode() != Response.Status.OK.getStatusCode()) {
-      SimpleDateFormat sdf = new SimpleDateFormat();
-      System.out.printf("Date/Time: %s; Status Code: %s%n", sdf.format(new Date()), con.getResponseCode());
-      return null;
-    }
+    responseCode = con.getResponseCode();
+    if (responseCode != Response.Status.OK.getStatusCode()) return null;
     return con.getInputStream();
   }
 }

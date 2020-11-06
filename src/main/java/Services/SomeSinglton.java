@@ -10,7 +10,7 @@ import java.util.List;
 
 @Singleton
 @Lock(LockType.WRITE)
-@AccessTimeout(0)
+@AccessTimeout(1000)
 public class SomeSinglton {
 
 //  @AccessTimeout(0)
