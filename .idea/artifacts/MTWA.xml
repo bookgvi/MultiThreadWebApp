@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="MTWA">
+    <output-path>$PROJECT_DIR$/out/artifacts/MTWA</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="MultiThreadWebApp" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
