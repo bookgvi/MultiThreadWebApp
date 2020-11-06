@@ -16,7 +16,7 @@ public class SomeWebResource {
   SomeSinglton someSinglton;
 
   @GET
-  public Response getAll() {
+  public Response getAll() throws InterruptedException {
     Map<String, String> responseMap = new HashMap<String, String>();
     responseMap.put("msg", someSinglton.getResponseMsg());
     return Response.ok().entity(responseMap).build();

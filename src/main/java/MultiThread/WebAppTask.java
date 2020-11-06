@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WebAppTask implements Runnable {
   private String response;
@@ -30,14 +32,20 @@ public class WebAppTask implements Runnable {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    System.out.printf("Task %s, response msg: %s%n", Thread.currentThread().getName(), response);
+    SimpleDateFormat sdf = new SimpleDateFormat();
+    if (response != null)
+      System.out.printf("Date/Time: %s; Task %s, response msg: %s%n", sdf.format(new Date()), Thread.currentThread().getName(), response);
   }
 
   private InputStream request(String url) throws IOException {
     URL createdURL = new URL(url);
     HttpURLConnection con = (HttpURLConnection) createdURL.openConnection();
     con.setRequestMethod("GET");
-    if (con.getResponseCode() != Response.Status.OK.getStatusCode()) return null;
+    if (con.getResponseCode() != Response.Status.OK.getStatusCode()) {
+      SimpleDateFormat sdf = new SimpleDateFormat();
+      System.out.printf("Date/Time: %s; Status Code: %s%n", sdf.format(new Date()), con.getResponseCode());
+      return null;
+    }
     return con.getInputStream();
   }
 }
